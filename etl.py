@@ -46,7 +46,7 @@ def process_song_data(spark, input_data, output_data):
     df = spark.read.json(song_data)
 
     # extract columns to create songs table
-    songs_table = df.select(df['song_id'], df['title'], df['artist_id'], df['year'], df['duration']).show()
+    songs_table = df.select(df['song_id'], df['title'], df['artist_id'], df['year'], df['duration'])
     # ^ ABOVE: style from here -- https://spark.apache.org/docs/latest/sql-getting-started.html
     # songs_table = df['song_id', 'title', 'artist_id', 'year', 'duration']  # might this work instead?
 
@@ -58,7 +58,7 @@ def process_song_data(spark, input_data, output_data):
     # or, shall I do as is ^ ABOVE: style from here -- https://spark.apache.org/docs/latest/sql-getting-started.html
 
     # write artists table to parquet files
-    artists_table
+    artists_table = None  # TODO! TODO!
 
 
 def process_log_data(spark, input_data, output_data):
@@ -78,36 +78,38 @@ def process_log_data(spark, input_data, output_data):
     df = spark.read.json(log_data)
 
     # filter by actions for song plays
-    df =
+    songplays = df.filter(df['page'] == 'NextSong')
+    # ^ ABOVE: style from here -- https://spark.apache.org/docs/latest/sql-getting-started.html
+    # TODO: figure out how songplays should get used.
 
     # extract columns for users table
-    artists_table =
+    artists_table = None  # TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
 
     # write users table to parquet files
     artists_table
 
     # create timestamp column from original timestamp column
     get_timestamp = udf()
-    df =
+    df = None # TODO: add in timestamp column
 
     # create datetime column from original timestamp column
     get_datetime = udf()
-    df =
+    df = None # TODO: add in datetime column
 
     # extract columns to create time table
-    time_table =
+    time_table = None # TODO
 
     # write time table to parquet files partitioned by year and month
-    time_table
+    time_table = None # TODO
 
     # read in song data to use for songplays table
-    song_df =
+    song_df = None # TODO
 
     # extract columns from joined song and log datasets to create songplays table
-    songplays_table =
+    songplays_table = None # TODO
 
     # write songplays table to parquet files partitioned by year and month
-    songplays_table
+    songplays_table = None # TODO
 
 
 def main():
