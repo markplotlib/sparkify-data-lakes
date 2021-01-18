@@ -62,11 +62,20 @@ def process_song_data(spark, input_data, output_data):
 
 
 def process_log_data(spark, input_data, output_data):
+    """
+    reads JSON file from S3, transforms it,
+    and outputs them back to S3 as partitioned parquet files (as fact and dimensional tables)
+
+    :param spark: an existing SparkSession
+    :param input_data: S3 bucket directory (e.g., "s3a://udacity-dend/")
+    :param output_data: TODO
+    """
     # get filepath to log data file
-    log_data =
+    log_data = input_data + 'log_data/2018/11/*.json'               # TEST
+    # log_data = os.path.join(input_data, 'log_data/*/*/*.json')    # FINAL
 
     # read log data file
-    df =
+    df = spark.read.json(log_data)
 
     # filter by actions for song plays
     df =
