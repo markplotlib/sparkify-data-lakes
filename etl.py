@@ -31,17 +31,16 @@ def create_spark_session():
 
 def process_song_data(spark, input_data, output_data):
     """
-    reads two JSON files from S3 (song_data and load_data),
-    transforms them to create five different tables,
+    reads JSON file from S3, transforms it,
     and outputs them back to S3 as partitioned parquet files (as fact and dimensional tables)
 
     :param spark: an existing SparkSession
     :param input_data: S3 bucket directory (e.g., "s3a://udacity-dend/")
-    :param output_data: empty string
+    :param output_data: TODO
     """
     # get filepath to song data file
     song_data = input_data + 'song_data/A/A/B/*.json'                   # TEST
-    # song_data = os.path.join(input_data, "song-data/*/*/*/*.json")    # FINAL
+    # song_data = os.path.join(input_data, 'song-data/*/*/*/*.json')    # FINAL
 
     # read song data file
     df = spark.read.json(song_data)
@@ -52,10 +51,11 @@ def process_song_data(spark, input_data, output_data):
     # songs_table = df['song_id', 'title', 'artist_id', 'year', 'duration']  # might this work instead?
 
     # write songs table to parquet files partitioned by year and artist
-    songs_table
+    songs_table = None  # TODO! TODO!
 
     # extract columns to create artists table
-    artists_table =
+    artists_table = df['artist_id', 'artist_name', 'artist_location', 'artist_latitude', 'artist_longitude']
+    # or, shall I do as is ^ ABOVE: style from here -- https://spark.apache.org/docs/latest/sql-getting-started.html
 
     # write artists table to parquet files
     artists_table
