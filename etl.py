@@ -84,9 +84,7 @@ def process_log_data(spark, input_data, output_data):
     df = spark.read.json(log_data)
 
     # filter by actions for song plays
-    songplays = df.filter(df['page'] == 'NextSong')
-# ^ ABOVE: style from here -- https://spark.apache.org/docs/latest/sql-getting-started.html
-# TODO: figure out how songplays should get used.
+    df = df.filter(df['page'] == 'NextSong')
 
     # extract columns for users table
     # dim table: users
@@ -95,7 +93,7 @@ def process_log_data(spark, input_data, output_data):
 # TODO -- if a fail point occurs: friend's code has an extra line here: dropDuplicates(['user_id'])
 
     # write users table to parquet files
-    users_table = None  # TODO --parquet--
+    users_table.write.parquet(os.path.join(output_data, 'users'))
 
     # create timestamp column from original timestamp column
     get_timestamp = udf()
@@ -112,7 +110,7 @@ def process_log_data(spark, input_data, output_data):
 #     TODO -- note: this may be more involved, due to datetime complexities!
 
     # write time table to parquet files partitioned by year and month
-    time_table = None # TODO  --parquet--
+    time_table.write.partitionBy('year', 'month').parquet(os.path.join(output_data, 'time'))
 
     # read in song data to use for songplays table
     # https://knowledge.udacity.com/questions/439032
@@ -124,7 +122,7 @@ def process_log_data(spark, input_data, output_data):
     songplays_table = df['songplay_id', 'start_time', 'user_id', 'level', 'song_id', 'artist_id', 'session_id', 'location', 'user_agent']
 
     # write songplays table to parquet files partitioned by year and month
-    songplays_table = None # TODO  --parquet--
+    songplays_table.write.partitionBy('year', 'month').parquet(os.path.join(output_data, 'songplays'))
 #    TODO -- see rubric / instructions -- this may be a LOT more involved
 
 
