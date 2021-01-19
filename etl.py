@@ -74,7 +74,7 @@ def process_log_data(spark, input_data, output_data):
 
     :param spark: an existing SparkSession
     :param input_data: S3 bucket directory (e.g., "s3a://udacity-dend/")
-    :param output_data: TODO
+    :param output_data: output directory (e.g., 'output/')
     """
     # get filepath to log data file
     log_data = input_data + 'log_data/2018/11/*.json'               # TEST
@@ -85,14 +85,14 @@ def process_log_data(spark, input_data, output_data):
 
     # filter by actions for song plays
     songplays = df.filter(df['page'] == 'NextSong')
-    # ^ ABOVE: style from here -- https://spark.apache.org/docs/latest/sql-getting-started.html
-    # TODO: figure out how songplays should get used.
+# ^ ABOVE: style from here -- https://spark.apache.org/docs/latest/sql-getting-started.html
+# TODO: figure out how songplays should get used.
 
     # extract columns for users table
     # dim table: users
     users_table = df['user_id', 'first_name', 'last_name', 'gender', 'level']
 # or, shall I do style from here -- https://spark.apache.org/docs/latest/sql-getting-started.html
-    # TODO -- fail point? friend's code has an extra line here: dropDuplicates(['user_id'])
+# TODO -- if a fail point occurs: friend's code has an extra line here: dropDuplicates(['user_id'])
 
     # write users table to parquet files
     users_table = None  # TODO --parquet--
