@@ -40,7 +40,7 @@ def process_song_data(spark, input_data, output_data):
 
     :param spark: an existing SparkSession
     :param input_data: S3 bucket directory (e.g., "s3a://udacity-dend/")
-    :param output_data: TODO
+    :param output_data: output directory (e.g., 'output/')
     """
     # get filepath to song data file
     song_data = input_data + 'song_data/A/A/B/*.json'                   # TEST
@@ -56,7 +56,7 @@ def process_song_data(spark, input_data, output_data):
 # songs_table = df.select(df['song_id'], df['title'], df['artist_id'], df['year'], df['duration'])
 
     # write songs table to parquet files partitioned by year and artist
-    songs_table = None  # TODO! --parquet-- TODO!
+    songs_table.write.partitionBy('year', 'artist_id').mode('overwrite').parquet(os.path.join(output_data, 'songs'))
 
     # extract columns to create artists table
     # dim table: artists
@@ -115,6 +115,7 @@ def process_log_data(spark, input_data, output_data):
     time_table = None # TODO  --parquet--
 
     # read in song data to use for songplays table
+    # https://knowledge.udacity.com/questions/439032
     song_df = None # TODO
 
     # extract columns from joined song and log datasets to create songplays table
@@ -131,7 +132,7 @@ def main():
     """main execution function"""
     spark = create_spark_session()
     input_data = "s3a://udacity-dend/"
-    output_data = ""
+    output_data = "output/"
 
     process_song_data(spark, input_data, output_data)
     process_log_data(spark, input_data, output_data)
