@@ -64,7 +64,7 @@ def process_song_data(spark, input_data, output_data):
 # or, shall I do style from here -- https://spark.apache.org/docs/latest/sql-getting-started.html
 
     # write artists table to parquet files
-    artists_table = None  # TODO! TODO!  --parquet--
+    artists_table.write.parquet(os.path.join(output_data, 'artists'))
 
 
 def process_log_data(spark, input_data, output_data):
