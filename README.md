@@ -1,6 +1,10 @@
 # PySpark ETL and Data Lake
 ETL pipeline that uses PySpark to process extracted S3 data, and loads data back into S3 as dimensional tables
 
+## Command Line Run Instructions
+
+`python etl.py`
+
 ## Introduction
 A (fictional) music streaming startup, Sparkify, has grown their user base and song database even more
  and wants to move their data warehouse to a data lake. Their data resides in S3, in a directory of JSON logs
