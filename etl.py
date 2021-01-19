@@ -19,9 +19,13 @@ os.environ['AWS_ACCESS_KEY_ID']=config['AWS_ACCESS_KEY_ID']
 os.environ['AWS_SECRET_ACCESS_KEY']=config['AWS_SECRET_ACCESS_KEY']
 
 
-# online docs
-# https://spark.apache.org/docs/latest/sql-getting-started.html
 def create_spark_session():
+    """
+    Create SparkSession to process extracted S3 data.
+    online docs: https://spark.apache.org/docs/latest/sql-getting-started.html
+
+    :return: an existing SparkSession
+    """
     spark = SparkSession \
         .builder \
         .config("spark.jars.packages", "org.apache.hadoop:hadoop-aws:2.7.0") \
@@ -88,6 +92,7 @@ def process_log_data(spark, input_data, output_data):
     # dim table: users
     users_table = df['user_id', 'first_name', 'last_name', 'gender', 'level']
 # or, shall I do style from here -- https://spark.apache.org/docs/latest/sql-getting-started.html
+    # TODO -- fail point? friend's code has an extra line here: dropDuplicates(['user_id'])
 
     # write users table to parquet files
     users_table = None  # TODO --parquet--
@@ -104,6 +109,7 @@ def process_log_data(spark, input_data, output_data):
     # dim table: time
     time_table = df['start_time', 'hour', 'day', 'week', 'month', 'year', 'weekday']
 # or, shall I do style from here -- https://spark.apache.org/docs/latest/sql-getting-started.html
+#     TODO -- note: this may be more involved, due to datetime complexities!
 
     # write time table to parquet files partitioned by year and month
     time_table = None # TODO  --parquet--
@@ -118,9 +124,11 @@ def process_log_data(spark, input_data, output_data):
 
     # write songplays table to parquet files partitioned by year and month
     songplays_table = None # TODO  --parquet--
+#    TODO -- see rubric / instructions -- this may be a LOT more involved
 
 
 def main():
+    """main execution function"""
     spark = create_spark_session()
     input_data = "s3a://udacity-dend/"
     output_data = ""
