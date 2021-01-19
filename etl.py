@@ -46,19 +46,21 @@ def process_song_data(spark, input_data, output_data):
     df = spark.read.json(song_data)
 
     # extract columns to create songs table
-    songs_table = df.select(df['song_id'], df['title'], df['artist_id'], df['year'], df['duration'])
-    # ^ ABOVE: style from here -- https://spark.apache.org/docs/latest/sql-getting-started.html
-    # songs_table = df['song_id', 'title', 'artist_id', 'year', 'duration']  # might this work instead?
+    # dim table: songs
+    songs_table = df['song_id', 'title', 'artist_id', 'year', 'duration']
+# or, shall I do style from here -- https://spark.apache.org/docs/latest/sql-getting-started.html
+# songs_table = df.select(df['song_id'], df['title'], df['artist_id'], df['year'], df['duration'])
 
     # write songs table to parquet files partitioned by year and artist
-    songs_table = None  # TODO! TODO!
+    songs_table = None  # TODO! --parquet-- TODO!
 
     # extract columns to create artists table
+    # dim table: artists
     artists_table = df['artist_id', 'artist_name', 'artist_location', 'artist_latitude', 'artist_longitude']
-    # or, shall I do as is ^ ABOVE: style from here -- https://spark.apache.org/docs/latest/sql-getting-started.html
+# or, shall I do style from here -- https://spark.apache.org/docs/latest/sql-getting-started.html
 
     # write artists table to parquet files
-    artists_table = None  # TODO! TODO!
+    artists_table = None  # TODO! TODO!  --parquet--
 
 
 def process_log_data(spark, input_data, output_data):
@@ -83,10 +85,12 @@ def process_log_data(spark, input_data, output_data):
     # TODO: figure out how songplays should get used.
 
     # extract columns for users table
-    artists_table = None  # TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
+    # dim table: users
+    users_table = df['user_id', 'first_name', 'last_name', 'gender', 'level']
+# or, shall I do style from here -- https://spark.apache.org/docs/latest/sql-getting-started.html
 
     # write users table to parquet files
-    artists_table
+    users_table = None  # TODO --parquet--
 
     # create timestamp column from original timestamp column
     get_timestamp = udf()
@@ -97,19 +101,23 @@ def process_log_data(spark, input_data, output_data):
     df = None # TODO: add in datetime column
 
     # extract columns to create time table
-    time_table = None # TODO
+    # dim table: time
+    time_table = df['start_time', 'hour', 'day', 'week', 'month', 'year', 'weekday']
+# or, shall I do style from here -- https://spark.apache.org/docs/latest/sql-getting-started.html
 
     # write time table to parquet files partitioned by year and month
-    time_table = None # TODO
+    time_table = None # TODO  --parquet--
 
     # read in song data to use for songplays table
     song_df = None # TODO
 
     # extract columns from joined song and log datasets to create songplays table
-    songplays_table = None # TODO
+    # fact table: songplays
+    # TODO: incorporate JOIN, of song and log datasets
+    songplays_table = df['songplay_id', 'start_time', 'user_id', 'level', 'song_id', 'artist_id', 'session_id', 'location', 'user_agent']
 
     # write songplays table to parquet files partitioned by year and month
-    songplays_table = None # TODO
+    songplays_table = None # TODO  --parquet--
 
 
 def main():
