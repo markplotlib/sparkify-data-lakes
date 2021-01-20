@@ -56,7 +56,8 @@ def process_song_data(spark, input_data, output_data):
 # songs_table = df.select(df['song_id'], df['title'], df['artist_id'], df['year'], df['duration'])
 
     # write songs table to parquet files partitioned by year and artist
-    songs_table.write.partitionBy('year', 'artist_id').mode('overwrite').parquet(os.path.join(output_data, 'songs'))
+    # songs_table.write.partitionBy('year', 'artist_id').mode('overwrite').parquet(os.path.join(output_data, 'songs'))
+    songs_table.write.partitionBy('year', 'artist_id').parquet(os.path.join(output_data, 'songs'))
 
     # extract columns to create artists table
     # dim table: artists
@@ -90,7 +91,7 @@ def process_log_data(spark, input_data, output_data):
     # dim table: users
     users_table = df['user_id', 'first_name', 'last_name', 'gender', 'level']
 # or, shall I do style from here -- https://spark.apache.org/docs/latest/sql-getting-started.html
-# TODO -- if a fail point occurs: friend's code has an extra line here: dropDuplicates(['user_id'])
+# if a fail point occurs: friend's code has an extra line here: dropDuplicates(['user_id'])  or dropDuplicates()
 
     # write users table to parquet files
     users_table.write.parquet(os.path.join(output_data, 'users'))
