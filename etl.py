@@ -131,7 +131,9 @@ def process_log_data(spark, input_data, output_data):
                                       song_df.song_id, song_df.artist_id,
                                       col('sessionId').alias('session_id'),
                                       df.location,
-                                      col('userAgent').alias('user_agent')
+                                      col('userAgent').alias('user_agent'),
+                                      year('timestamp').alias('year'),
+                                      month('datetime').alias('month')
                                       )
 
     # write songplays table to parquet files partitioned by year and month
