@@ -106,23 +106,31 @@ def process_log_data(spark, input_data, output_data):
     # extract columns to create time table
     # dim table: time
     time_table = df['start_time', 'hour', 'day', 'week', 'month', 'year', 'weekday']
+    # TODO: add 'timestamp' ??
 # or, shall I do style from here -- https://spark.apache.org/docs/latest/sql-getting-started.html
-#     TODO -- note: this may be more involved, due to datetime complexities!
 
     # write time table to parquet files partitioned by year and month
     time_table.write.partitionBy('year', 'month').parquet(os.path.join(output_data, 'time'))
 
     # read in song data to use for songplays table
     # https://knowledge.udacity.com/questions/439032
-    song_df = None # TODO
+    song_df = spark.read.parquet(output_data + 'songs/*/*/*.parquet')
 
     # extract columns from joined song and log datasets to create songplays table
     # fact table: songplays
-    # TODO: incorporate JOIN, of song and log datasets
-    songplays_table = df['songplay_id', 'start_time', 'user_id', 'level', 'song_id', 'artist_id', 'session_id', 'location', 'user_agent']
+    #  LEFT: df, aka log datasets
+    # RIGHT: song_df, aka song datasets, coming from process_log_data()
+    joint_df = df.join(song_df,
+                       (df.artist == song_df.artist_name) &
+                       (df.length == song_df.duration) &
+                       (df.song == song_df.title), 'left_outer')
+    # songplays_table = df['songplay_id', 'start_time', 'user_id', 'level', 'song_id', 'artist_id', 'session_id', 'location', 'user_agent']
+    # TODO: extract columns from joint_df
+    # TODO
+    # TODO
 
     # write songplays table to parquet files partitioned by year and month
-    songplays_table.write.partitionBy('year', 'month').parquet(os.path.join(output_data, 'songplays'))
+    # songplays_table.write.partitionBy('year', 'month').parquet(os.path.join(output_data, 'songplays'))
 #    TODO -- see rubric / instructions -- this may be a LOT more involved
 
 
