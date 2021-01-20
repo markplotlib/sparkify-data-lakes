@@ -133,11 +133,10 @@ def process_log_data(spark, input_data, output_data):
                                       df.location,
                                       col('userAgent').alias('user_agent'),
                                       year('timestamp').alias('year'),
-                                      month('datetime').alias('month')
-                                      )
+                                      month('datetime').alias('month'))
 
     # write songplays table to parquet files partitioned by year and month
-    # songplays_table.write.partitionBy('year', 'month').parquet(os.path.join(output_data, 'songplays'))
+    songplays_table.write.partitionBy('year', 'month').parquet(os.path.join(output_data, 'songplays'))
 #    TODO -- see rubric / instructions -- this may be a LOT more involved
 
 
