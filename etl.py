@@ -97,12 +97,11 @@ def process_log_data(spark, input_data, output_data):
     users_table.write.parquet(os.path.join(output_data, 'users'))
 
     # create timestamp column from original timestamp column
-    get_timestamp = udf()
-    df = None # TODO: add in timestamp column
+    get_timestamp = udf(lambda ms: datetime.fromtimestamp(ms / 1000.0).strftime('%Y-%m-%d %H:%M:%S'))
+    df = df.withColumn('timestamp', get_timestamp(df.ts))
 
     # create datetime column from original timestamp column
-    get_datetime = udf()
-    df = None # TODO: add in datetime column
+    # Note from mentor: You can ignore the get_datetime part as the timestamp creation is enough
 
     # extract columns to create time table
     # dim table: time
