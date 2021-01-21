@@ -52,8 +52,8 @@ def process_song_data(spark, input_data, output_data):
     # extract columns to create songs table
     # dim table: songs
     songs_table = df['song_id', 'title', 'artist_id', 'year', 'duration']
+    songs_table = songs_table.dropDuplicates()
 # or, shall I do style from here -- https://spark.apache.org/docs/latest/sql-getting-started.html
-# songs_table = df.select(df['song_id'], df['title'], df['artist_id'], df['year'], df['duration'])
 
     # write songs table to parquet files partitioned by year and artist
     # songs_table.write.partitionBy('year', 'artist_id').mode('overwrite').parquet(os.path.join(output_data, 'songs'))
@@ -62,6 +62,7 @@ def process_song_data(spark, input_data, output_data):
     # extract columns to create artists table
     # dim table: artists
     artists_table = df['artist_id', 'artist_name', 'artist_location', 'artist_latitude', 'artist_longitude']
+    artists_table = artists_table.dropDuplicates()
 # or, shall I do style from here -- https://spark.apache.org/docs/latest/sql-getting-started.html
 
     # write artists table to parquet files
@@ -89,7 +90,8 @@ def process_log_data(spark, input_data, output_data):
 
     # extract columns for users table
     # dim table: users
-    users_table = df['user_id', 'first_name', 'last_name', 'gender', 'level']
+    users_table = df['userId', 'firstName', 'lastName', 'gender', 'level']
+    users_table = users_table.dropDuplicates(['userId'])
 # or, shall I do style from here -- https://spark.apache.org/docs/latest/sql-getting-started.html
 # if a fail point occurs: friend's code has an extra line here: dropDuplicates(['user_id'])  or dropDuplicates()
 
@@ -111,8 +113,9 @@ def process_log_data(spark, input_data, output_data):
                            dayofmonth(df.start_time).alias('dayofmonth'),
                            month(df.start_time).alias('month'),
                            year(df.start_time).alias('year'),
-                           weekofyear(df.start_time).alias('weekofyear'))
-                           # date_format(df.start_time).alias('date_format')
+                           weekofyear(df.start_time).alias('weekofyear')) \
+                            .dropDuplicates()
+                           # date_format(df.start_time).alias('date_format')  -- column not needed, right?
 
     # write time table to parquet files partitioned by year and month
     time_table.write.partitionBy('year', 'month').parquet(os.path.join(output_data, 'time'))
