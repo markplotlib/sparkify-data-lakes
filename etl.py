@@ -2,7 +2,7 @@ import configparser
 from datetime import datetime
 import os
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import udf, col
+from pyspark.sql.functions import udf, col, monotonically_increasing_id
 from pyspark.sql.functions import year, month, dayofmonth, hour, weekofyear, date_format
 
 # The ETL script reads song_data and load_data from S3,
@@ -44,7 +44,9 @@ def process_song_data(spark, input_data, output_data):
     """
     # get filepath to song data file
     song_data = input_data + 'song_data/A/A/B/*.json'                   # TEST
+# TEST
     # song_data = os.path.join(input_data, 'song_data/*/*/*/*.json')    # FINAL
+# FINAL
 
     # read song data file
     df = spark.read.json(song_data)
@@ -80,7 +82,9 @@ def process_log_data(spark, input_data, output_data):
     """
     # get filepath to log data file
     log_data = input_data + 'log_data/2018/11/*.json'               # TEST
+# TEST
     # log_data = os.path.join(input_data, 'log_data/*/*/*.json')    # FINAL
+# FINAL
 
     # read log data file
     df = spark.read.json(log_data)
@@ -93,7 +97,6 @@ def process_log_data(spark, input_data, output_data):
     users_table = df['userId', 'firstName', 'lastName', 'gender', 'level']
     users_table = users_table.dropDuplicates(['userId'])
 # or, shall I do style from here -- https://spark.apache.org/docs/latest/sql-getting-started.html
-# if a fail point occurs: friend's code has an extra line here: dropDuplicates(['user_id'])  or dropDuplicates()
 
     # write users table to parquet files
     users_table.write.parquet(os.path.join(output_data, 'users'))
@@ -113,16 +116,18 @@ def process_log_data(spark, input_data, output_data):
                            dayofmonth(df.start_time).alias('dayofmonth'),
                            month(df.start_time).alias('month'),
                            year(df.start_time).alias('year'),
-                           weekofyear(df.start_time).alias('weekofyear')) \
-                            .dropDuplicates()
+                           weekofyear(df.start_time).alias('weekofyear') \
                            # date_format(df.start_time).alias('date_format')  -- column not needed, right?
+                 ).dropDuplicates()
 
     # write time table to parquet files partitioned by year and month
     time_table.write.partitionBy('year', 'month').parquet(os.path.join(output_data, 'time'))
 
     # read in song data to use for songplays table
     song_df = spark.read.parquet(input_data + 'song_data/A/A/B/*.json')   # TEST
+# TEST
     # song_df = spark.read.parquet(input_data + 'song_data/*/*/*/*.json')   # FINAL
+# FINAL
 
     # extract columns from joined song and log datasets to create songplays table
     # fact table: songplays
@@ -131,7 +136,9 @@ def process_log_data(spark, input_data, output_data):
     joint_df = df.join(song_df,
                        (df.artist == song_df.artist_name) &
                        (df.length == song_df.duration) &
-                       (df.song == song_df.title), 'left_outer')
+                       (df.song == song_df.title), 'left_outer' \
+               ).dropDuplicates()
+
     # extract columns from joint_df
     songplays_table = joint_df.select(col('start_time'),
                                       col('userId').alias('user_id'),
@@ -141,13 +148,12 @@ def process_log_data(spark, input_data, output_data):
                                       df.location,
                                       col('userAgent').alias('user_agent'),
                                       year('start_time').alias('year'),
-                                      month('start_time').alias('month'))
+                                      month('start_time').alias('month') \
+                      ).withColumn('songplay_id', monotonically_increasing_id())
 
     # write songplays table to parquet files partitioned by year and month
     songplays_table.write.partitionBy('year', 'month').parquet(os.path.join(output_data, 'songplays'))
-#    TODO -- see rubric / instructions -- this may be a LOT more involved
-
-# TODO -- createOrReplaceTempView
+    # TODO -- do I need to add .mode('overwrite') after .partitionBy() and before .parquet() ??
 
 
 def main():
