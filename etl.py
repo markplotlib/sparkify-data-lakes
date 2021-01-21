@@ -9,9 +9,6 @@ from pyspark.sql.functions import year, month, dayofmonth, hour, weekofyear, dat
 # transforms them to create five different tables,
 # and writes them to partitioned parquet files in table directories on S3.
 
-# Data subset
-# You can work on your project with a smaller dataset found in workspace, then move on to bigger dataset on AWS.
-
 config = configparser.ConfigParser()
 config.read('dl.cfg')
 
@@ -160,7 +157,7 @@ def main():
     """main execution function"""
     spark = create_spark_session()
     input_data = "s3a://udacity-dend/"
-    output_data = "output/"
+    output_data = "s3://sparkify-music-data-lake/"
 
     process_song_data(spark, input_data, output_data)
     process_log_data(spark, input_data, output_data)
