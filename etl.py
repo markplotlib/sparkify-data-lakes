@@ -98,16 +98,21 @@ def process_log_data(spark, input_data, output_data):
 
     # create timestamp column from original timestamp column
     get_timestamp = udf(lambda ms: datetime.fromtimestamp(ms / 1000.0).strftime('%Y-%m-%d %H:%M:%S'))
-    df = df.withColumn('timestamp', get_timestamp(df.ts))
+    df = df.withColumn('start_time', get_timestamp(df.ts))
 
     # create datetime column from original timestamp column
     # Note from mentor: You can ignore the get_datetime part as the timestamp creation is enough
 
     # extract columns to create time table
     # dim table: time
-    time_table = df['start_time', 'hour', 'day', 'week', 'month', 'year', 'weekday']
-    # TODO: add 'timestamp' ??
-# or, shall I do style from here -- https://spark.apache.org/docs/latest/sql-getting-started.html
+    # imported functions: year, month, dayofmonth, hour, weekofyear, date_format
+    time_table = df.select(col('start_time'),
+                           hour(df.start_time).alias('hour'),
+                           dayofmonth(df.start_time).alias('dayofmonth'),
+                           month(df.start_time).alias('month'),
+                           year(df.start_time).alias('year'),
+                           weekofyear(df.start_time).alias('weekofyear'))
+                           # date_format(df.start_time).alias('date_format')
 
     # write time table to parquet files partitioned by year and month
     time_table.write.partitionBy('year', 'month').parquet(os.path.join(output_data, 'time'))
@@ -125,19 +130,21 @@ def process_log_data(spark, input_data, output_data):
                        (df.length == song_df.duration) &
                        (df.song == song_df.title), 'left_outer')
     # extract columns from joint_df
-    songplays_table = joint_df.select(col('timestamp').alias('start_time'),
+    songplays_table = joint_df.select(col('start_time'),
                                       col('userId').alias('user_id'),
                                       df.level,
                                       song_df.song_id, song_df.artist_id,
                                       col('sessionId').alias('session_id'),
                                       df.location,
                                       col('userAgent').alias('user_agent'),
-                                      year('timestamp').alias('year'),
-                                      month('datetime').alias('month'))
+                                      year('start_time').alias('year'),
+                                      month('start_time').alias('month'))
 
     # write songplays table to parquet files partitioned by year and month
     songplays_table.write.partitionBy('year', 'month').parquet(os.path.join(output_data, 'songplays'))
 #    TODO -- see rubric / instructions -- this may be a LOT more involved
+
+# TODO -- createOrReplaceTempView
 
 
 def main():
