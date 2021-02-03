@@ -63,3 +63,9 @@ The log files in the dataset are partitioned by year and month.
 log_data/2018/11/2018-11-12-events.json
 log_data/2018/11/2018-11-13-events.json
 ```
+
+### Data Schema
+
+The star schema is used, with a fact table centered around dimension tables at its periphery.
+
+![image info](./img/sparkify_ERD.png)
