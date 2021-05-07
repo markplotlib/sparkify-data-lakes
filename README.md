@@ -1,6 +1,10 @@
+<img src="./img/s3.png" alt="Amazon S3" width="350" title="Amazon S3" align="middle" />
+
 # PySpark ETL and Data Lake
 ETL pipeline that uses PySpark to process extracted S3 data, and loads data
  back into S3 as dimensional tables
+
+<img src="./img/pyspark.png" alt="PySpark" title="PySpark" align="middle" />
 
 # Data Preview
 
@@ -40,6 +44,8 @@ As their data engineer, I built an ETL pipeline that extracts their
  continue finding insights in what songs their users are listening to.
  Test queries are provided by the Sparkify analytics team
  to compare ETL pipeline results with their expected results.
+
+<img src="./img/etl.jpg" alt="Amazon S3" width="500" title="Amazon S3" align="middle" />
 
 ### Project Tools
 Spark API: PySpark
