@@ -1,10 +1,10 @@
-<img src="./img/s3.png" alt="Amazon S3" width="350" title="Amazon S3" align="middle" />
+<img src="./img/pyspark.png" alt="PySpark" title="PySpark" align="middle" />
 
 # PySpark ETL and Data Lake
 ETL pipeline that uses PySpark to process extracted S3 data, and loads data
  back into S3 as dimensional tables
 
-<img src="./img/pyspark.png" alt="PySpark" title="PySpark" align="middle" />
+<img src="./img/s3.png" alt="Amazon S3" width="200" title="Amazon S3" align="right" />
 
 # Data Preview
 
